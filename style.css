@@ -48,7 +48,7 @@ nav {
   margin-right: 1rem;
   color: inherit;
   border: 1px solid #fff;
-  transition: all 0.3s;
+  transition: all 0.5s;
 }
 
 .login__input:focus {
@@ -233,7 +233,7 @@ h2 {
   gap: 0.4rem 1rem;
 }
 
-/* Exceptions for interst */
+/* Exceptions for interest */
 .form.form--loan {
   grid-template-columns: 2.5fr 1fr 2.5fr;
 }
