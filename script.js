@@ -63,6 +63,8 @@ const inputClosePin = document.querySelector(".form__input--pin");
 const displayMovements = function (movements) {
   containerMovements.innerHTML = "";
   movements.forEach(function (mov, i) {
+    //mov is the array property and the i is the index of each array value
+
     const type = mov > 0 ? "deposit" : "withdrawal"; // if the current movement be > 0 (+) then it's a deposit but if it is < 0 (-) the its a withdrawal
 
     const html = `<div class="movements__row">
@@ -75,16 +77,47 @@ const displayMovements = function (movements) {
   });
 };
 displayMovements(account1.movements);
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
-// LECTURES
 
-const currencies = new Map([
-  ["USD", "United States dollar"],
-  ["EUR", "Euro"],
-  ["GBP", "Pound sterling"],
-]);
+//balance summary
+// let balance = 0;
+// for (const mov of account1.movements) balance += mov
 
-const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
+// console.log(balance);
+// labelBalance.textContent = balance + '$';
 
-/////////////////////////////////////////////////
+const calcDisplayBalance = function (movements) {
+  const balance = movements.reduce(function (acc, cur) {
+    return acc + cur;
+  },0);
+  labelBalance.textContent = `${balance}€`
+};
+calcDisplayBalance(account1.movements);
+
+//created a function passing the accs(accounts) property then we looped through the accs with forEach method passing the acc property. Then we created a value in the accs(accounts) {acc.userName} and then setting it to the .owner value from the individual object property
+const createUserName = function (accs) {
+  accs.forEach(function (acc) {
+    acc.userName = acc.owner //created a new variable (username)housing the acc.owner variable
+      .toLowerCase()
+      .split(" ")
+      .map(function (name) {
+        return name[0]; //to return the first letter of the array
+      })
+      .join("");
+  });
+};
+createUserName(accounts);
+
+
+
+//filter in and out summary
+
+const deposit = account1.movements.reduce(function (acc, cur) {
+  return acc + cur;
+});
+
+labelSumIn.textContent = deposit + "$";
+
+const withdrawal = account1.movements.reduce(function (acc, cur) {
+  return acc + cur;
+});
+labelSumOut.textContent = withdrawal;
