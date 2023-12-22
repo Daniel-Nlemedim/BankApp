@@ -156,7 +156,7 @@ calcDisplayInterest(account1.interestRate);
 
 //timer
 const calcDisplayTimer = function () {
-  let countdownTime = 1 * 60;
+  let countdownTime = 5 * 60;
 
   //display inital countdown value
   updateCountDown();
@@ -168,7 +168,7 @@ const calcDisplayTimer = function () {
     //check if countDown reaches zero
     if (countdownTime <= 0) {
       clearInterval(countdownInterval);
-      alert("You have been logged out");
+      alert("Login timeout reached");
     }
   }, 1000);
 
