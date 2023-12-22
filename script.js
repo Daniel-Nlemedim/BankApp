@@ -112,13 +112,13 @@ const calcDisplayDepositSummary = function (movements) {
     .filter(function (mov) {
       return mov > 0;
     })
-    .map(function (mov) {
-      return mov * Math.trunc(eurToUsd);
-    })
+    // .map(function (mov) {
+    //   return mov * Math.trunc(eurToUsd);
+    // })
     .reduce(function (acc, cur) {
       return acc + cur;
     }, 0);
-  labelSumIn.textContent = `${displaySumIn}$`;
+  labelSumIn.textContent = `${displaySumIn}€`;
 };
 calcDisplayDepositSummary(account1.movements);
 
@@ -128,13 +128,13 @@ const calcDisplayWithdrawalSummary = function (movements) {
     .filter(function (mov) {
       return mov < 0;
     })
-    .map(function (mov) {
-      return mov * Math.trunc(eurToUsd);
-    })
+    // .map(function (mov) {
+    //   return mov * Math.trunc(eurToUsd);
+    // })
     .reduce(function (acc, cur) {
       return acc + cur;
     }, 0);
-  labelSumOut.textContent = `${displaySumOut}$`;
+  labelSumOut.textContent = `${displaySumOut}€`;
 };
 calcDisplayWithdrawalSummary(account1.movements);
 
@@ -142,12 +142,40 @@ calcDisplayWithdrawalSummary(account1.movements);
 const calcDisplayInterest = function (interestRate) {
   const convertInterestRate = interestRate / 100;
   const calcInterest =
-    convertInterestRate *
-    account1.movements
-      .reduce(function (acc, cur) {
+    (convertInterestRate *
+      account1.movements.reduce(function (acc, cur) {
         return acc + cur;
-      }, 0)
+      }, 0) *
+      12) /
+    100;
+  const approximatedCalcInterest = Math.trunc(calcInterest);
 
-  labelSumInterest.textContent = `${calcInterest}€`;
+  labelSumInterest.textContent = `${approximatedCalcInterest}€`;
 };
 calcDisplayInterest(account1.interestRate);
+
+//timer
+const calcDisplayTimer = function () {
+  let countdownTime = 1 * 60;
+
+  //display inital countdown value
+  updateCountDown();
+  //update the countdown every second
+  let countdownInterval = setInterval(function () {
+    countdownTime--;
+    updateCountDown();
+
+    //check if countDown reaches zero
+    if (countdownTime <= 0) {
+      clearInterval(countdownInterval);
+      alert("You have been logged out");
+    }
+  }, 1000);
+
+  function updateCountDown() {
+    let minutes = Math.trunc(countdownTime / 60);
+    let seconds = countdownTime % 60;
+    labelTimer.textContent = `${minutes}:${seconds}`;
+  }
+};
+calcDisplayTimer();
