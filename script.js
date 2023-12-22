@@ -1,8 +1,5 @@
 "use strict";
 
-/////////////////////////////////////////////////
-// BANKIST APP
-
 // Data
 const account1 = {
   owner: "Johnathan Steve",
@@ -60,6 +57,7 @@ const inputLoanAmount = document.querySelector(".form__input--loan-amount");
 const inputCloseUsername = document.querySelector(".form__input--user");
 const inputClosePin = document.querySelector(".form__input--pin");
 
+//functions
 const displayMovements = function (movements) {
   containerMovements.innerHTML = "";
   movements.forEach(function (mov, i) {
@@ -88,8 +86,8 @@ displayMovements(account1.movements);
 const calcDisplayBalance = function (movements) {
   const balance = movements.reduce(function (acc, cur) {
     return acc + cur;
-  },0);
-  labelBalance.textContent = `${balance}€`
+  }, 0);
+  labelBalance.textContent = `${balance}€`;
 };
 calcDisplayBalance(account1.movements);
 
@@ -107,17 +105,49 @@ const createUserName = function (accs) {
 };
 createUserName(accounts);
 
+//SumIn
+const eurToUsd = 1.1;
+const calcDisplayDepositSummary = function (movements) {
+  const displaySumIn = movements
+    .filter(function (mov) {
+      return mov > 0;
+    })
+    .map(function (mov) {
+      return mov * Math.trunc(eurToUsd);
+    })
+    .reduce(function (acc, cur) {
+      return acc + cur;
+    }, 0);
+  labelSumIn.textContent = `${displaySumIn}$`;
+};
+calcDisplayDepositSummary(account1.movements);
 
+//SumOut
+const calcDisplayWithdrawalSummary = function (movements) {
+  const displaySumOut = movements
+    .filter(function (mov) {
+      return mov < 0;
+    })
+    .map(function (mov) {
+      return mov * Math.trunc(eurToUsd);
+    })
+    .reduce(function (acc, cur) {
+      return acc + cur;
+    }, 0);
+  labelSumOut.textContent = `${displaySumOut}$`;
+};
+calcDisplayWithdrawalSummary(account1.movements);
 
-//filter in and out summary
+//calcInterestRate
+const calcDisplayInterest = function (interestRate) {
+  const convertInterestRate = interestRate / 100;
+  const calcInterest =
+    convertInterestRate *
+    account1.movements
+      .reduce(function (acc, cur) {
+        return acc + cur;
+      }, 0)
 
-const deposit = account1.movements.reduce(function (acc, cur) {
-  return acc + cur;
-});
-
-labelSumIn.textContent = deposit + "$";
-
-const withdrawal = account1.movements.reduce(function (acc, cur) {
-  return acc + cur;
-});
-labelSumOut.textContent = withdrawal;
+  labelSumInterest.textContent = `${calcInterest}€`;
+};
+calcDisplayInterest(account1.interestRate);
