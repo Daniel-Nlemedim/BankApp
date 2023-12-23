@@ -156,7 +156,7 @@ calcDisplayInterest(account1.interestRate);
 
 //timer
 const calcDisplayTimer = function () {
-  let countdownTime = 1 * 60;
+  let countdownTime = 5 * 60;
 
   //display inital countdown value
   updateCountDown();
