@@ -58,6 +58,7 @@ const inputCloseUsername = document.querySelector(".form__input--user");
 const inputClosePin = document.querySelector(".form__input--pin");
 
 //functions
+
 const displayMovements = function (movements) {
   containerMovements.innerHTML = "";
   movements.forEach(function (mov, i) {
@@ -68,28 +69,62 @@ const displayMovements = function (movements) {
     const html = `<div class="movements__row">
         <div class="movements__type movements__type--${type}">
         ${i + 1} ${type} </div>
-        <div class="movements__value">${mov}</div>
+        <div class="movements__value">${mov}€</div>
       </div>`;
 
     containerMovements.insertAdjacentHTML("afterbegin", html);
   });
 };
-displayMovements(account1.movements);
 
-//balance summary
-// let balance = 0;
-// for (const mov of account1.movements) balance += mov
-
-// console.log(balance);
-// labelBalance.textContent = balance + '$';
-
+//reduce method sums up values
 const calcDisplayBalance = function (movements) {
   const balance = movements.reduce(function (acc, cur) {
     return acc + cur;
   }, 0);
   labelBalance.textContent = `${balance}€`;
 };
-calcDisplayBalance(account1.movements);
+
+//SumIn
+const eurToUsd = 1.1;
+const calcDisplaySummary = function (acct) {
+  const SumIn = acct.movements
+    .filter(function (mov) {
+      return mov > 0;
+    })
+    // .map(function (mov) {
+    //   return mov * Math.trunc(eurToUsd);
+    // })
+    .reduce(function (acc, cur) {
+      return acc + cur;
+    }, 0);
+  labelSumIn.textContent = `${SumIn}€`;
+
+  //sum out
+  const SumOut = acct.movements
+    .filter(function (mov) {
+      return mov < 0;
+    })
+    .reduce(function (acc, cur) {
+      return acc + cur;
+    }, 0);
+  labelSumOut.textContent = `${Math.abs(SumOut)}€`;
+
+  //interest
+  const interest = acct.movements
+    .filter(function (mov) {
+      return mov > 0;
+    })
+    .map(function (mov) {
+      return (mov * acct.interestRate) / 100;
+    })
+    .filter(function (int) {
+      return int >= 1; //filter interest that are above 1€
+    })
+    .reduce(function (acc, cur) {
+      return acc + cur;
+    }, 0);
+  labelSumInterest.textContent = `${interest}€`;
+};
 
 //created a function passing the accs(accounts) property then we looped through the accs with forEach method passing the acc property. Then we created a value in the accs(accounts) {acc.userName} and then setting it to the .owner value from the individual object property
 const createUserName = function (accs) {
@@ -105,58 +140,9 @@ const createUserName = function (accs) {
 };
 createUserName(accounts);
 
-//SumIn
-const eurToUsd = 1.1;
-const calcDisplayDepositSummary = function (movements) {
-  const displaySumIn = movements
-    .filter(function (mov) {
-      return mov > 0;
-    })
-    // .map(function (mov) {
-    //   return mov * Math.trunc(eurToUsd);
-    // })
-    .reduce(function (acc, cur) {
-      return acc + cur;
-    }, 0);
-  labelSumIn.textContent = `${displaySumIn}€`;
-};
-calcDisplayDepositSummary(account1.movements);
-
-//SumOut
-const calcDisplayWithdrawalSummary = function (movements) {
-  const displaySumOut = movements
-    .filter(function (mov) {
-      return mov < 0;
-    })
-    // .map(function (mov) {
-    //   return mov * Math.trunc(eurToUsd);
-    // })
-    .reduce(function (acc, cur) {
-      return acc + cur;
-    }, 0);
-  labelSumOut.textContent = `${displaySumOut}€`;
-};
-calcDisplayWithdrawalSummary(account1.movements);
-
-//calcInterestRate
-const calcDisplayInterest = function (interestRate) {
-  const convertInterestRate = interestRate / 100;
-  const calcInterest =
-    (convertInterestRate *
-      account1.movements.reduce(function (acc, cur) {
-        return acc + cur;
-      }, 0) *
-      12) /
-    100;
-  const approximatedCalcInterest = Math.trunc(calcInterest);
-
-  labelSumInterest.textContent = `${approximatedCalcInterest}€`;
-};
-calcDisplayInterest(account1.interestRate);
-
 //timer
 const calcDisplayTimer = function () {
-  let countdownTime = 5 * 60;
+  let countdownTime = 10 * 60;
 
   //display inital countdown value
   updateCountDown();
@@ -173,9 +159,47 @@ const calcDisplayTimer = function () {
   }, 1000);
 
   function updateCountDown() {
-    let minutes = Math.trunc(countdownTime / 60);
-    let seconds = countdownTime % 60;
-    labelTimer.textContent = `${minutes}:${seconds}`;
+    const minutes = Math.trunc(countdownTime / 60);
+    const seconds = countdownTime % 60;
+    const countDownTime = `${minutes}:${seconds}`;
+    labelTimer.textContent = countDownTime;
   }
 };
-calcDisplayTimer();
+
+//EventHandlers
+let currentAccount;
+
+btnLogin.addEventListener("click", function (e) {
+  e.preventDefault();
+
+  currentAccount = accounts.find(function (acc) {
+    return acc.userName === inputLoginUsername.value;
+  });
+
+  //pin
+  if (currentAccount?.pin === Number(inputLoginPin.value)) {
+    //display UI and welcome message
+    labelWelcome.textContent = `welcome back, ${
+      currentAccount.owner.split(" ")[0]
+    }.`;
+    containerApp.style.opacity = 100;
+
+    //clearing the input field after login
+    inputLoginUsername.value = inputLoginPin.value = "";
+    inputLoginPin.blur();
+
+    //display movement
+    displayMovements(currentAccount.movements);
+
+    //display balance
+    calcDisplayBalance(currentAccount.movements);
+
+    //display summary
+    calcDisplaySummary(currentAccount);
+
+    //display timer
+    calcDisplayTimer(currentAccount.movements);
+  } else if(currentAccount !== inputLoginPin){
+    alert( `Wrong pin, try again!`);
+  }
+});
