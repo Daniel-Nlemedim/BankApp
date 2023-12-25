@@ -199,7 +199,7 @@ btnLogin.addEventListener("click", function (e) {
 
     //display timer
     calcDisplayTimer(currentAccount.movements);
-  } else if(currentAccount !== inputLoginPin){
-    alert( `Wrong pin, try again!`);
+  } else if (currentAccount !== inputLoginPin) {
+    alert(`Wrong pin, try again!`);
   }
 });
