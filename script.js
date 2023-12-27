@@ -77,10 +77,11 @@ const displayMovements = function (movements) {
 };
 
 //reduce method sums up values
-const calcDisplayBalance = function (movements) {
-  const balance = movements.reduce(function (acc, cur) {
+const calcDisplayBalance = function (acct) {
+  const balance = acct.movements.reduce(function (acc, cur) {
     return acc + cur;
   }, 0);
+  acct.balance = balance;
   labelBalance.textContent = `${balance}€`;
 };
 
@@ -169,6 +170,20 @@ const calcDisplayTimer = function () {
 //EventHandlers
 let currentAccount;
 
+const updateUI = function (acct) {
+  //display movement
+  displayMovements(acct.movements);
+
+  //display balance
+  calcDisplayBalance(acct);
+
+  //display summary
+  calcDisplaySummary(acct);
+
+  //display timer
+  calcDisplayTimer(acct.movements);
+};
+//implementing login
 btnLogin.addEventListener("click", function (e) {
   e.preventDefault();
 
@@ -188,18 +203,38 @@ btnLogin.addEventListener("click", function (e) {
     inputLoginUsername.value = inputLoginPin.value = "";
     inputLoginPin.blur();
 
-    //display movement
-    displayMovements(currentAccount.movements);
-
-    //display balance
-    calcDisplayBalance(currentAccount.movements);
-
-    //display summary
-    calcDisplaySummary(currentAccount);
-
-    //display timer
-    calcDisplayTimer(currentAccount.movements);
+    //update UI
+    updateUI(currentAccount);
   } else if (currentAccount !== inputLoginPin) {
-    alert(`Wrong pin, try again!`);
+    alert(`Wrong pin, please try again!`);
+  }
+});
+
+//implementing transfers
+btnTransfer.addEventListener("click", function (e) {
+  e.preventDefault();
+
+  const receiverAcc = accounts.find(function (acc) {
+    return acc.userName === inputTransferTo.value;
+  });
+  const amount = Number(inputTransferAmount.value);
+
+  inputTransferAmount.value = inputTransferTo.value = "";
+
+  if (
+    amount > 0 &&
+    receiverAcc &&
+    currentAccount.balance >= amount &&
+    receiverAcc.userName !== currentAccount.userName //valid when the amount is greater than zero, when the currentAccount has more that the requested transfer amount, when the transfer is not been directed to current user.
+  ) {
+    //doing the transfer
+    currentAccount.movements.push(-amount);
+    receiverAcc.movements.push(+amount);
+    inputTransferAmount.blur();
+
+    //UPDATE UI
+    updateUI(currentAccount);
+
+    alert(`Transfer to ${receiverAcc.owner} was successful`);
   }
 });
