@@ -238,3 +238,15 @@ btnTransfer.addEventListener("click", function (e) {
     alert(`Transfer to ${receiverAcc.owner} was successful`);
   }
 });
+
+// manipulating date
+const calcDate = function () {
+  let currentDate = new Date();
+
+  const day = currentDate.getDate();
+  const month = currentDate.getMonth() + 1;
+  const year = currentDate.getFullYear();
+
+  labelDate.textContent = `${day}/${month}/${year}`;
+};
+calcDate();
