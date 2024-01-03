@@ -206,7 +206,7 @@ btnLogin.addEventListener("click", function (e) {
     //update UI
     updateUI(currentAccount);
   } else if (currentAccount !== inputLoginPin) {
-    alert(`Wrong pin, please try again!`);
+    alert(`Wrong pin or invalid username, please try again!`);
   }
 });
 
