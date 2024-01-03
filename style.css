@@ -289,3 +289,11 @@ h2 {
 .timer {
   font-weight: 600;
 }
+
+.footer {
+  text-align: center;
+  font-size: 10px;
+  text-decoration: #444;
+  font-weight: 600;
+  padding: 20px;
+}

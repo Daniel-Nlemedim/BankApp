@@ -235,7 +235,8 @@ btnTransfer.addEventListener("click", function (e) {
     //UPDATE UI
     updateUI(currentAccount);
 
-    alert(`Transfer to ${receiverAcc.owner} was successful`);
+
+     alert(`Transfer of ${amount}€ to ${receiverAcc.owner} was successful`);
   }
 });
 
@@ -250,3 +251,17 @@ const calcDate = function () {
   labelDate.textContent = `${day}/${month}/${year}`;
 };
 calcDate();
+
+//implementing close account
+// btnClose.addEventListener("click", function (e) {
+//   e.preventDefault();
+//   if (
+//     currentAccount.userName === inputCloseUsername.value &&
+//     currentAccount.pin === Number(inputClosePin.value)
+//   ) {
+//     let index = accounts.findIndex(function (acc) {
+//       return acc.userName === currentAccount.userName;
+//     });
+//     index = currentAccount.owner;
+//   }
+// });
