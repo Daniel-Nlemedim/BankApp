@@ -124,6 +124,7 @@ const calcDisplaySummary = function (acct) {
     .reduce(function (acc, cur) {
       return acc + cur;
     }, 0);
+
   labelSumInterest.textContent = `${interest}€`;
 };
 
@@ -235,8 +236,7 @@ btnTransfer.addEventListener("click", function (e) {
     //UPDATE UI
     updateUI(currentAccount);
 
-
-     alert(`Transfer of ${amount}€ to ${receiverAcc.owner} was successful`);
+    alert(`Transfer of ${amount}€ to ${receiverAcc.owner} was successful`);
   }
 });
 
@@ -253,15 +253,40 @@ const calcDate = function () {
 calcDate();
 
 //implementing close account
-// btnClose.addEventListener("click", function (e) {
-//   e.preventDefault();
-//   if (
-//     currentAccount.userName === inputCloseUsername.value &&
-//     currentAccount.pin === Number(inputClosePin.value)
-//   ) {
-//     let index = accounts.findIndex(function (acc) {
-//       return acc.userName === currentAccount.userName;
-//     });
-//     index = currentAccount.owner;
-//   }
-// });
+btnClose.addEventListener("click", function (e) {
+  e.preventDefault();
+
+  
+  if (
+    inputCloseUsername.value === currentAccount.userName &&
+    Number(inputClosePin.value) === currentAccount.pin
+    ) {
+      const index = accounts.findIndex(function (acc) {
+        return acc.userName === currentAccount.userName;
+      });
+      
+      //delete acct
+      accounts.splice(index, 1);
+      
+      //hide UI
+      containerApp.style.opacity = 0;
+    }
+
+    inputCloseUsername.value = inputClosePin.value = "";
+});
+
+//Loan request
+btnLoan.addEventListener("click", function (e) {
+  e.preventDefault();
+
+  const amount = Number(inputLoanAmount.value);
+  inputLoanAmount.value = "";
+
+  if (amount >= 0 || amount < 0) {
+    currentAccount.movements.push(+amount);
+  }
+
+  updateUI(currentAccount);
+
+  alert(`Loan request of ${amount}€ successful`);
+});
