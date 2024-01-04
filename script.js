@@ -270,8 +270,9 @@ btnClose.addEventListener("click", function (e) {
       
       //hide UI
       containerApp.style.opacity = 0;
+      
+      labelWelcome.textContent = `Log in to get started`;
     }
-
     inputCloseUsername.value = inputClosePin.value = "";
 });
 
