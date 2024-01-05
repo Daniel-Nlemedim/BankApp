@@ -59,9 +59,18 @@ const inputClosePin = document.querySelector(".form__input--pin");
 
 //functions
 
-const displayMovements = function (movements) {
+const displayMovements = function (movements, sort = false) {
+  // setting the sort to fault so that it only sort whenever we click on the sort btn
   containerMovements.innerHTML = "";
-  movements.forEach(function (mov, i) {
+
+  //making movements to support sort
+  const movs = sort
+    ? movements.splice().sort(function (a, b) {
+        return a - b;
+      })
+    : movements;
+
+  movs.forEach(function (mov, i) {
     //mov is the array property and the i is the index of each array value
 
     const type = mov > 0 ? "deposit" : "withdrawal"; // if the current movement be > 0 (+) then it's a deposit but if it is < 0 (-) the its a withdrawal
@@ -197,7 +206,7 @@ btnLogin.addEventListener("click", function (e) {
     //display UI and welcome message
     labelWelcome.textContent = `welcome back, ${
       currentAccount.owner.split(" ")[0]
-    }.`;
+    }!`;
     containerApp.style.opacity = 100;
 
     //clearing the input field after login
@@ -240,6 +249,60 @@ btnTransfer.addEventListener("click", function (e) {
   }
 });
 
+//Loan request
+btnLoan.addEventListener("click", function (e) {
+  e.preventDefault();
+
+  const amount = Number(inputLoanAmount.value);
+
+  if (
+    amount > 0 &&
+    currentAccount.movements.some(function (mov) {
+      return mov >= amount * 0.1;
+    })
+  ) {
+    currentAccount.movements.push(+amount);
+
+    alert(`Loan request of ${amount}€ successful`);
+  }
+
+  inputLoanAmount.value = "";
+
+  updateUI(currentAccount);
+});
+
+//implementing close account
+btnClose.addEventListener("click", function (e) {
+  e.preventDefault();
+
+  if (
+    inputCloseUsername.value === currentAccount.userName &&
+    Number(inputClosePin.value) === currentAccount.pin
+  ) {
+    const index = accounts.findIndex(function (acc) {
+      return acc.userName === currentAccount.userName;
+    });
+
+    //delete acct
+    accounts.splice(index, 1);
+
+    //hide UI
+    containerApp.style.opacity = 0;
+
+    labelWelcome.textContent = `Log in to get started`;
+  }
+  inputCloseUsername.value = inputClosePin.value = "";
+});
+
+//sort btn
+let sorted = false;
+btnSort.addEventListener('click', function(e){
+  e.preventDefault()
+
+  displayMovements(currentAccount.movements, !sorted) //!sorted is doing the opposite of sorted (true)
+  sorted = !sorted;
+})
+
 // manipulating date
 const calcDate = function () {
   let currentDate = new Date();
@@ -251,43 +314,3 @@ const calcDate = function () {
   labelDate.textContent = `${day}/${month}/${year}`;
 };
 calcDate();
-
-//implementing close account
-btnClose.addEventListener("click", function (e) {
-  e.preventDefault();
-
-  
-  if (
-    inputCloseUsername.value === currentAccount.userName &&
-    Number(inputClosePin.value) === currentAccount.pin
-    ) {
-      const index = accounts.findIndex(function (acc) {
-        return acc.userName === currentAccount.userName;
-      });
-      
-      //delete acct
-      accounts.splice(index, 1);
-      
-      //hide UI
-      containerApp.style.opacity = 0;
-      
-      labelWelcome.textContent = `Log in to get started`;
-    }
-    inputCloseUsername.value = inputClosePin.value = "";
-});
-
-//Loan request
-btnLoan.addEventListener("click", function (e) {
-  e.preventDefault();
-
-  const amount = Number(inputLoanAmount.value);
-  inputLoanAmount.value = "";
-
-  if (amount >= 0 || amount < 0) {
-    currentAccount.movements.push(+amount);
-  }
-
-  updateUI(currentAccount);
-
-  alert(`Loan request of ${amount}€ successful`);
-});
