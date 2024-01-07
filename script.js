@@ -65,7 +65,7 @@ const displayMovements = function (movements, sort = false) {
 
   //making movements to support sort
   const movs = sort
-    ? movements.splice().sort(function (a, b) {
+    ? movements.slice().sort(function (a, b) {
         return a - b;
       })
     : movements;
@@ -296,12 +296,12 @@ btnClose.addEventListener("click", function (e) {
 
 //sort btn
 let sorted = false;
-btnSort.addEventListener('click', function(e){
-  e.preventDefault()
+btnSort.addEventListener("click", function (e) {
+  e.preventDefault();
 
-  displayMovements(currentAccount.movements, !sorted) //!sorted is doing the opposite of sorted (true)
-  sorted = !sorted;
-})
+  displayMovements(currentAccount.movements, !sorted); //!sorted is doing the opposite of sorted (true)
+  sorted = !sorted; //converted it back to false
+});
 
 // manipulating date
 const calcDate = function () {
