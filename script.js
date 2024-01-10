@@ -39,6 +39,7 @@ const labelSumIn = document.querySelector(".summary__value--in");
 const labelSumOut = document.querySelector(".summary__value--out");
 const labelSumInterest = document.querySelector(".summary__value--interest");
 const labelTimer = document.querySelector(".timer");
+const labelCopyYear = document.querySelector(".copy-year");
 
 const containerApp = document.querySelector(".app");
 const containerMovements = document.querySelector(".movements");
@@ -78,7 +79,7 @@ const displayMovements = function (movements, sort = false) {
     const html = `<div class="movements__row">
         <div class="movements__type movements__type--${type}">
         ${i + 1} ${type} </div>
-        <div class="movements__value">${mov}€</div>
+        <div class="movements__value">${mov.toFixed(2)}€</div>
       </div>`;
 
     containerMovements.insertAdjacentHTML("afterbegin", html);
@@ -91,7 +92,7 @@ const calcDisplayBalance = function (acct) {
     return acc + cur;
   }, 0);
   acct.balance = balance;
-  labelBalance.textContent = `${balance}€`;
+  labelBalance.textContent = `${balance.toFixed(2)}€`;
 };
 
 //SumIn
@@ -101,13 +102,10 @@ const calcDisplaySummary = function (acct) {
     .filter(function (mov) {
       return mov > 0;
     })
-    // .map(function (mov) {
-    //   return mov * Math.trunc(eurToUsd);
-    // })
     .reduce(function (acc, cur) {
       return acc + cur;
     }, 0);
-  labelSumIn.textContent = `${SumIn}€`;
+  labelSumIn.textContent = `${SumIn.toFixed(2)}€`;
 
   //sum out
   const SumOut = acct.movements
@@ -117,7 +115,7 @@ const calcDisplaySummary = function (acct) {
     .reduce(function (acc, cur) {
       return acc + cur;
     }, 0);
-  labelSumOut.textContent = `${Math.abs(SumOut)}€`;
+  labelSumOut.textContent = `${Math.abs(SumOut).toFixed(2)}€`;
 
   //interest
   const interest = acct.movements
@@ -134,7 +132,7 @@ const calcDisplaySummary = function (acct) {
       return acc + cur;
     }, 0);
 
-  labelSumInterest.textContent = `${interest}€`;
+  labelSumInterest.textContent = `${interest.toFixed(2)}€`; //used toFixed function to round the number to two decimal places
 };
 
 //created a function passing the accs(accounts) property then we looped through the accs with forEach method passing the acc property. Then we created a value in the accs(accounts) {acc.userName} and then setting it to the .owner value from the individual object property
@@ -253,7 +251,7 @@ btnTransfer.addEventListener("click", function (e) {
 btnLoan.addEventListener("click", function (e) {
   e.preventDefault();
 
-  const amount = Number(inputLoanAmount.value);
+  const amount = Math.floor(inputLoanAmount.value);
 
   if (
     amount > 0 &&
@@ -314,3 +312,12 @@ const calcDate = function () {
   labelDate.textContent = `${day}/${month}/${year}`;
 };
 calcDate();
+
+//copy-year
+const calcYear = function () {
+  let currentYear = new Date();
+
+  const year = currentYear.getFullYear();
+  labelCopyYear.textContent = `${year}.`;
+};
+calcYear();
